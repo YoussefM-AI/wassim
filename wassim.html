@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rahti - Bien-être & Équilibre des Soignants</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --wp--preset--spacing--30: 1.5rem;
+            --wp--preset--spacing--40: 4rem;
+            --primary-color: #0077B6;
+            --secondary-color: #03045E;
+            --accent-color: #00B4D8;
+            --text-color: #2b2d42;
+            --light-bg: #f8f9fa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Container classes */
+        .wp-block-group {
+            position: relative;
+        }
+
+        .alignfull {
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+        }
+
+        .alignwide {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 2rem;
+        }
+
+        /* Columns implementation */
+        .wp-block-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+
+        .wp-block-column {
+            flex: 1;
+            min-width: 300px;
+            background: #ffffff;
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            position: relative;
+        }
+
+        .wp-block-column::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 16px 16px 0 0;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .wp-block-column:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+        }
+
+        .wp-block-column:hover::before {
+            opacity: 1;
+        }
+
+        /* Typography */
+        h2.wp-block-heading {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+            letter-spacing: -1px;
+        }
+
+        h3.wp-block-heading {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        p {
+            font-size: 1.05rem;
+            color: #555 !important;
+        }
+
+        .has-medium-font-size {
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto 3rem auto;
+            color: #6c757d !important;
+        }
+
+        .has-text-align-center {
+            text-align: center;
+        }
+
+        /* Custom sections */
+        .has-background {
+            background: #3fbad9 !important;
+            color: white;
+            padding: 6rem 0 !important;
+        }
+
+        .has-background h2,
+        .has-background h3,
+        .has-background p {
+            color: white !important;
+        }
+
+        .has-background .wp-block-column {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .has-background .wp-block-column::before {
+            display: none;
+        }
+
+        .has-background .wp-block-column:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-10px);
+        }
+
+        /* Buttons */
+        .wp-block-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 3rem;
+            width: 100%;
+        }
+
+        .wp-block-button__link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 10px 20px rgba(0, 119, 182, 0.3);
+            cursor: pointer;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wp-block-button__link::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .wp-block-button__link:hover::after {
+            left: 100%;
+        }
+
+        .wp-block-button__link:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 119, 182, 0.4);
+            color: white;
+        }
+
+        /* CTA Section */
+        .is-contact-section-name {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem !important;
+        }
+
+        .is-contact-description {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Layout fix for full width sections */
+        .is-style-default {
+            padding-left: 0;
+            padding-right: 0;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        .is-style-default>.wp-block-group {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        @media (max-width: 768px) {
+
+            h2.wp-block-heading,
+            .is-contact-section-name {
+                font-size: 2.2rem;
+            }
+
+            .wp-block-columns {
+                gap: 1.5rem;
+            }
+
+            .wp-block-column {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        /* Header styling */
+        .site-header {
+            width: 100%;
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(248, 245, 230, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        .header-left {
+            flex: 1;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 0.5rem;
+            margin-bottom: -4rem;
+            position: relative;
+            z-index: 5;
+            flex: 1;
+        }
+
+        .hero-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem 1rem 2rem;
+            gap: 2rem;
+        }
+
+        .hero-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--secondary-color);
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.6rem;
+            font-weight: 300;
+            color: #3fbad9;
+        }
+
+        .hero-description {
+            font-size: 1.15rem;
+            color: #444;
+            line-height: 1.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-connect {
+            display: inline-block;
+            background-color: #3fbad9;
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(63, 186, 217, 0.3);
+            transition: all 0.3s ease;
+            width: fit-content;
+        }
+
+        .btn-connect:hover {
+            background-color: #2b9bb5;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(63, 186, 217, 0.4);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        .header-nav {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .brand-text {
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(0, 119, 182, 0.1);
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
+            background: rgba(0, 119, 182, 0.04);
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .site-logo {
+            height: 600px;
+            width: auto;
+            object-fit: contain;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Site Header -->
+    <header class="site-header">
+        <div class="header-left">
+            <span class="brand-text">Rahti</span>
+        </div>
+        <nav class="header-nav">
+            <a href="inscription.html" class="nav-link">Inscription</a>
+            <a href="connexion.html" class="nav-link">Se connecter</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h2 class="hero-subtitle">Nous sommes là pour prendre soin de vous</h2>
+            <h1 class="hero-title">
+                <span style="color: black;">Meilleur soin
+                    <br>& </span>
+                <span style="color: #3fbad9;"><br>Meilleur équilibre</span>
+            </h1>
+
+            <p class="hero-description">Rahti est une plateforme dédiée aux infirmiers pour évaluer leur niveau de
+                burnout et accéder à des ressources personnalisées afin d’améliorer leur bien-être professionnel.</p>
+            <a href="connexion.html" class="btn-connect">Se connecter</a>
+        </div>
+        <div class="logo-container">
+            <img src="logo.png" alt="Rahti Logo" class="site-logo">
+        </div>
+    </section>
+    <!-- wp:group {"metadata":{"name":"Intro","patternCategory":"about","patternSubcategory":"","remotePatternId":13361},"align":"full","className":"alignfull is-style-default","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40"},"blockGap":"var:preset|spacing|40"}},"layout":{"type":"constrained","justifyContent":"center"}} -->
+    <div class="wp-block-group alignfull is-style-default"
+        style="background-color: #f1f3f5; margin-top:0;margin-bottom:0;padding-top:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40)">
+        <!-- wp:group {"align":"full","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40"},"blockGap":"var:preset|spacing|30"}},"layout":{"type":"constrained","justifyContent":"center"}} -->
+        <div class="wp-block-group alignfull"
+            style="margin-top:0;margin-bottom:0;padding-top:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40)">
+            <!-- wp:heading {"style":{"typography":{"textAlign":"center"}}} -->
+            <h2 class="wp-block-heading has-text-align-center" style="color: black;">Comment ça fonctionne ?</h2>
+            <!-- /wp:heading -->
+
+            <!-- wp:paragraph {"style":{"typography":{"textAlign":"center"},"color":{"text":"#000000"}},"fontSize":"medium"} -->
+            <p class="has-text-align-center has-text-color has-medium-font-size" style="color:#000000">Un processus simple pour évaluer votre niveau de stress et vous aider à retrouver un équilibre durable.</p>
+            <!-- /wp:paragraph -->
+
+            <!-- wp:columns {"align":"wide","style":{"spacing":{"blockGap":{"top":"var:preset|spacing|40","left":"var:preset|spacing|40"}}}} -->
+            <div class="wp-block-columns alignwide"><!-- wp:column {"verticalAlignment":"top"} -->
+                <div class="wp-block-column is-vertically-aligned-top">
+                    <!-- wp:heading {"level":3,"style":{"typography":{"textAlign":"center"}}} -->
+                    <h3 class="wp-block-heading has-text-align-center">Étape 1 - Évaluez-vous</h3>
+                    <!-- /wp:heading -->
+
+                    <!-- wp:paragraph {"style":{"typography":{"textAlign":"center"},"color":{"text":"#000000"}}} -->
+                    <p class="has-text-align-center has-text-color" style="color:#000000">Répondez à un test complet
+                        pour évaluer
+                        vos habitudes alimentaires et physiques en toute simplicité.</p>
+                    <!-- /wp:paragraph -->
+                </div>
+                <!-- /wp:column -->
+
+                <!-- wp:column -->
+                <div class="wp-block-column">
+                    <!-- wp:heading {"level":3,"style":{"typography":{"textAlign":"center"}}} -->
+                    <h3 class="wp-block-heading has-text-align-center">Étape 2 - Analysez vos résultats</h3>
+                    <!-- /wp:heading -->
+
+                    <!-- wp:paragraph {"style":{"typography":{"textAlign":"center"},"color":{"text":"#000000"}}} -->
+                    <p class="has-text-align-center has-text-color" style="color:#000000">Obtenez une évaluation claire
+                        de
+                        vos besoins caloriques et des axes d'amélioration avec une interprétation adaptée.</p>
+                    <!-- /wp:paragraph -->
+                </div>
+                <!-- /wp:column -->
+
+                <!-- wp:column -->
+                <div class="wp-block-column">
+                    <!-- wp:heading {"level":3,"style":{"typography":{"textAlign":"center"}}} -->
+                    <h3 class="wp-block-heading has-text-align-center">Étape 3 - Améliorez votre bien-être</h3>
+                    <!-- /wp:heading -->
+
+                    <!-- wp:paragraph {"style":{"typography":{"textAlign":"center"},"color":{"text":"#000000"}}} -->
+                    <p class="has-text-align-center has-text-color" style="color:#000000">Recevez des conseils personnalisés pour prévenir l'épuisement et retrouver de la sérénité au travail.</p>
+                    <!-- /wp:paragraph -->
+                </div>
+                <!-- /wp:column -->
+            </div>
+            <!-- /wp:columns -->
+        </div>
+        <!-- /wp:group -->
+    </div>
+    <!-- /wp:group -->
+
+
+
+    <!-- wp:group {"metadata":{"name":"Intro","patternCategory":"about","patternSubcategory":"","remotePatternId":13361},"align":"full","className":"alignfull is-style-default","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40"},"blockGap":"var:preset|spacing|30"},"color":{"background":"#0077B6"}},"layout":{"type":"constrained","justifyContent":"center"}} -->
+    <div class="wp-block-group alignfull is-style-default has-background"
+        style="background-color:#3fbad9;margin-top:0;margin-bottom:0;padding-top:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40)">
+        <!-- wp:group {"align":"full","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40"},"blockGap":"var:preset|spacing|30"}},"layout":{"type":"constrained","justifyContent":"center"}} -->
+        <div class="wp-block-group alignfull"
+            style="margin-top:0;margin-bottom:0;padding-top:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40)">
+            <!-- wp:heading {"style":{"typography":{"textAlign":"center"}}} -->
+            <h2 class="wp-block-heading has-text-align-center">Pourquoi choisir Rahti ?</h2>
+            <!-- /wp:heading -->
+
+            <!-- wp:columns {"align":"wide","style":{"spacing":{"blockGap":{"top":"var:preset|spacing|40","left":"var:preset|spacing|40"}}}} -->
+            <div class="wp-block-columns alignwide"><!-- wp:column -->
+                <div class="wp-block-column">
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <img src="lock-removebg-preview.png" alt="Sécurité" style="width: 80px; height: 80px; object-fit: contain;">
+                    </div>
+                    <!-- wp:heading {"level":3,"style":{"typography":{"textAlign":"center"}}} -->
+                    <h3 class="wp-block-heading has-text-align-center"> 1 - <strong>Anonyme &amp; sécurisé</strong></h3>
+                    <!-- /wp:heading -->
+
+                    <!-- wp:paragraph {"style":{"typography":{"textAlign":"center"},"color":{"text":"#000000"}}} -->
+                    <p class="has-text-align-center has-text-color" style="color:#000000">Vos réponses restent
+                        confidentielles et protégées</p>
+
+                    <!-- /wp:paragraph -->
+                </div>
+                <!-- /wp:column -->
+
+                <!-- wp:column -->
+                <div class="wp-block-column">
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <img src="relax-removebg-preview.png" alt="Conseils adaptés" style="width: 80px; height: 80px; object-fit: contain;">
+                    </div>
+                    <!-- wp:heading {"level":3,"style":{"typography":{"textAlign":"center"}}} -->
+                    <h3 class="wp-block-heading has-text-align-center"> 2 - <strong>Conseils adaptés</strong></h3>
+                    <!-- /wp:heading -->
+
+                    <!-- wp:paragraph {"style":{"typography":{"textAlign":"center"},"color":{"text":"#000000"}}} -->
+                    <p class="has-text-align-center has-text-color" style="color:#000000">Recevez des recommandations adaptées pour mieux gérer votre charge mentale et évacuer le stress.</p>
+                    <!-- /wp:paragraph -->
+                </div>
+                <!-- /wp:column -->
+
+                <!-- wp:column -->
+                <div class="wp-block-column">
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <img src="poll-removebg-preview.png" alt="Suivi personnalisé" style="width: 80px; height: 80px; object-fit: contain;">
+                    </div>
+                    <!-- wp:heading {"level":3,"style":{"typography":{"textAlign":"center"}}} -->
+                    <h3 class="wp-block-heading has-text-align-center"> 3 - <strong>Suivi personnalisé</strong></h3>
+                    <!-- /wp:heading -->
+
+                    <!-- wp:paragraph {"style":{"typography":{"textAlign":"center"},"color":{"text":"#000000"}}} -->
+                    <p class="has-text-align-center has-text-color" style="color:#000000">Retrouvez du plaisir dans votre pratique soignante et améliorez progressivement votre qualité de vie.</p>
+                    <!-- /wp:paragraph -->
+                </div>
+                <!-- /wp:column -->
+            </div>
+            <!-- /wp:columns -->
+        </div>
+        <!-- /wp:group -->
+    </div>
+    <!-- /wp:group -->
+
+    <!-- wp:group {"metadata":{"name":"Contact","patternCategory":"forms","patternSubcategory":"forms/contact","remotePatternId":13500},"align":"full","className":"is-style-default","style":{"spacing":{"margin":{"top":"0","bottom":"0"},"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40"}}},"layout":{"type":"constrained","justifyContent":"center"}} -->
+    <div class="wp-block-group alignfull is-style-default"
+        style="margin-top:0;margin-bottom:0;padding-top:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40)">
+        <!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|30"}},"layout":{"type":"constrained","contentSize":"480px"}} -->
+        <div class="wp-block-group">
+            <!-- wp:group {"align":"full","layout":{"type":"flex","orientation":"vertical","justifyContent":"center"}} -->
+            <div class="wp-block-group alignfull">
+                <!-- wp:heading {"align":"wide","className":"alignwide has-text-align-center is-contact-section-name","style":{"spacing":{"margin":{"top":"0","bottom":"0"}},"typography":{"textAlign":"center"}}} -->
+                <h2 class="wp-block-heading has-text-align-center alignwide is-contact-section-name"
+                    style="margin-top:0;margin-bottom:0;color:black;">Prêt à améliorer votre bien-être professionnel ? </h2>
+                <!-- /wp:heading -->
+
+                <!-- wp:paragraph {"className":"is-contact-description","style":{"typography":{"textAlign":"center"},"color":{"text":"#000000"}}} -->
+                <p class="has-text-align-center is-contact-description has-text-color" style="color:#000000">Rejoignez
+                    des
+                    centaines d'infirmiers qui font de leur santé mentale une priorité </p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:buttons -->
+                <div class="wp-block-buttons"><!-- wp:button -->
+                    <div class="wp-block-button"><a href="inscription.html" class="wp-block-button__link wp-element-button"><strong>commencer
+                                gratuitement </strong></a></div>
+                    <!-- /wp:button -->
+                </div>
+                <!-- /wp:buttons -->
+            </div>
+            <!-- /wp:group -->
+        </div>
+        <!-- /wp:group -->
+    </div>
+    <!-- /wp:group -->
+
+    <footer style="background-color: #070709; color: white; text-align: center; padding: 4rem 1rem;">
+        <h3 style="margin: 0 0 0.5rem 0; font-size: 1.25rem; font-weight: 700;">Rahti</h3>
+        <p style="margin: 0; font-size: 0.95rem; color: rgb(255, 255, 255);">Prends soin de toi pour mieux soigner les autres.</p>
+    </footer>
+</body>
+
+</html>

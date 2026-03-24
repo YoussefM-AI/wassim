@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Rahti</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; color: #1a1c1e; }
+        
+        /* Sidebar/Header */
+        .admin-header { background: #0077b6; color: white; padding: 1.5rem 4rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .brand { font-size: 1.8rem; font-weight: 900; letter-spacing: 1px; }
+        .nav-links a { color: white; text-decoration: none; font-weight: 600; margin-left: 2rem; opacity: 0.9; }
+        .nav-links a:hover { opacity: 1; text-decoration: underline; }
+
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        h1 { font-size: 2rem; font-weight: 800; color: #2b2d42; }
+
+        /* Stats cards */
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; }
+        .stat-val { font-size: 2.2rem; font-weight: 800; color: #0077b6; }
+        .stat-label { font-size: 0.9rem; color: #666; font-weight: 600; text-transform: uppercase; margin-top: 0.5rem; }
+
+        /* Users Table */
+        .data-card { background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: #f8f9fa; padding: 1rem 1.5rem; font-weight: 700; color: #444; border-bottom: 1px solid #eee; }
+        td { padding: 1.2rem 1.5rem; border-bottom: 1px solid #f8f9fa; vertical-align: middle; }
+        tr:hover { background: #fcfcfc; }
+
+        .badge { padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700; }
+        .badge-admin { background: #e3f2fd; color: #0077b6; }
+        .badge-user { background: #f1f3f5; color: #666; }
+
+        .btn-view { background: #3fbad9; color: white; border: none; padding: 0.6rem 1rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-view:hover { background: #2b9bb5; }
+
+        /* Modal styling */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; width: 90%; max-width: 800px; max-height: 85vh; border-radius: 16px; padding: 2.5rem; overflow-y: auto; position: relative; }
+        .close-modal { position: absolute; top: 1.5rem; right: 1.5rem; font-size: 1.5rem; cursor: pointer; color: #999; }
+        
+        .user-history-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 1rem 0; }
+        .score-pill { background: #3fbad9; color: white; padding: 0.3rem 0.8rem; border-radius: 10px; font-weight: 800; }
+
+        .modal-chart-container { height: 250px; margin-bottom: 2rem; background: #fafafa; border-radius: 12px; padding: 1rem; border: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+    <header class="admin-header">
+        <div class="brand">Rahti <span style="font-size: 1rem; font-weight: 400;">| Admin</span></div>
+        <nav class="nav-links">
+            <a href="/logout">Déconnexion</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Gestion des Utilisateurs</h1>
+            <button onclick="exportToCSV()" class="btn-view" style="background: #2a9d8f;">📥 Exporter en CSV</button>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div id="total-users" class="stat-val">0</div>
+                <div class="stat-label">Utilisateurs inscrits</div>
+            </div>
+            <div class="stat-card">
+                <div id="total-tests" class="stat-val">0</div>
+                <div class="stat-label">Tests totaux réalisés</div>
+            </div>
+            <div class="stat-card">
+                <div id="avg-score" class="stat-val">0</div>
+                <div class="stat-label">Score moyen platforme</div>
+            </div>
+        </div>
+
+        <div class="data-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Hôpital / Service</th>
+                        <th>Rôle</th>
+                        <th>Tests</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="users-table-body">
+                    <!-- Dynamic users will appear here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- User Details Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 id="modal-user-name" style="margin-top: 0;">Détails de l'utilisateur</h2>
+            <p id="modal-user-info" style="color: #666; margin-bottom: 2rem;"></p>
+            
+            <div id="progression-chart-section" style="display: none;">
+                <h3 style="margin-bottom: 1rem;">Visualisation de la progression</h3>
+                <div class="modal-chart-container">
+                    <canvas id="userProgressionChart"></canvas>
+                </div>
+            </div>
+
+            <h3>Historique des Tests</h3>
+            <div id="modal-history-list">
+                <!-- User test history -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="notification-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+
+    <script>
+        let allUsers = [];
+        let currentChart = null;
+
+        // Toast Notification System
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notification-container');
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? '#2a9d8f' : (type === 'error' ? '#e63946' : '#3fbad9');
+            
+            toast.style.cssText = `
+                background: ${bgColor};
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                margin-bottom: 10px;
+                font-weight: 600;
+                transform: translateX(120%);
+                transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            `;
+            
+            const icon = type === 'success' ? '✅' : (type === 'error' ? '❌' : 'ℹ️');
+            toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => { toast.style.transform = 'translateX(0)'; }, 10);
+            
+            // Remove after 4 seconds
+            setTimeout(() => {
+                toast.style.transform = 'translateX(120%)';
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
+        }
+
+        async function fetchUsers() {
+            try {
+                const response = await fetch('/api/admin/users');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allUsers = data.users;
+                    renderDashboard();
+                    showNotification('Données chargées avec succès', 'info');
+                } else {
+                    showNotification('Accès refusé. Redirection...', 'error');
+                    setTimeout(() => window.location.href = 'connexion.html', 1500);
+                }
+            } catch (error) {
+                console.error('Failed to fetch users:', error);
+                showNotification('Erreur de connexion au serveur', 'error');
+            }
+        }
+
+        // CSV Export Logic
+        function exportToCSV() {
+            if (allUsers.length === 0) {
+                showNotification('Aucune donnée à exporter', 'error');
+                return;
+            }
+
+            // BOM for UTF-8 compatibility with Excel
+            const BOM = "\uFEFF";
+            let csvContent = "Nom,Email,Age,Sexe,Hopital,Service,Experience,Nb Tests,Dernier Score,Categorie\n";
+
+            allUsers.forEach(user => {
+                const lastTest = (user.tests && user.tests.length > 0) ? user.tests[user.tests.length - 1] : null;
+                
+                // Clean category from emojis for better CSV compatibility (removing Unicode emoji ranges)
+                let category = lastTest ? lastTest.category : "";
+                category = category.replace(/([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF]|\uD83D[\uDE00-\uDE4F]|\uD83D[\uDE80-\uDEFF]|\uD83E[\uDD00-\uDDFF]|\u2705|\u274C|\u2139|\u26AB|\u231B)/g, '').trim();
+
+                const row = [
+                    `"${user.name}"`,
+                    `"${user.email}"`,
+                    user.age || "",
+                    user.sexe || "",
+                    `"${user.hopital || ""}"`,
+                    `"${user.service || ""}"`,
+                    user.experience || "",
+                    user.tests ? user.tests.length : 0,
+                    lastTest ? lastTest.score : "",
+                    `"${category}"`
+                ].join(",");
+                csvContent += row + "\n";
+            });
+
+            const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `rahti_users_export_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            
+            showNotification('Export CSV généré !');
+        }
+
+        function renderDashboard() {
+            const tbody = document.getElementById('users-table-body');
+            tbody.innerHTML = '';
+            
+            let totalTests = 0;
+            let sumScores = 0;
+            let usersWithTests = 0;
+
+            allUsers.forEach((user, index) => {
+                const row = document.createElement('tr');
+                const numTests = user.tests ? user.tests.length : 0;
+                totalTests += numTests;
+
+                if (numTests > 0) {
+                    const userAvg = user.tests.reduce((acc, t) => acc + t.score, 0) / numTests;
+                    sumScores += userAvg;
+                    usersWithTests++;
+                }
+
+                const hospitalService = (user.hopital || user.service) 
+                    ? `${user.hopital || '-'} / ${user.service || '-'}`
+                    : '<span style="color:#999; font-style:italic;">Non spécifié</span>';
+
+                row.innerHTML = `
+                    <td><strong>${user.name}</strong></td>
+                    <td>${user.email}</td>
+                    <td>${hospitalService}</td>
+                    <td><span class="badge badge-${user.role}">${user.role.toUpperCase()}</span></td>
+                    <td>${numTests}</td>
+                    <td><button class="btn-view" onclick="viewUser(${index})">Voir Progression</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('total-users').textContent = allUsers.length;
+            document.getElementById('total-tests').textContent = totalTests;
+            document.getElementById('avg-score').textContent = usersWithTests > 0 ? (sumScores / usersWithTests).toFixed(1) : '-';
+        }
+
+        function viewUser(index) {
+            const user = allUsers[index];
+            document.getElementById('modal-user-name').textContent = user.name;
+            
+            // Build info string dynamically with only filled fields
+            const infoParts = [user.email];
+            if (user.age) infoParts.push(`${user.age} ans`);
+            if (user.sexe) infoParts.push(user.sexe);
+            if (user.hopital) infoParts.push(user.hopital);
+            if (user.service) infoParts.push(user.service);
+            if (user.experience) infoParts.push(`Expérience: ${user.experience} ans`);
+            
+            document.getElementById('modal-user-info').textContent = infoParts.join(' | ');
+            
+            const historyList = document.getElementById('modal-history-list');
+            historyList.innerHTML = '';
+            
+            if (user.tests && user.tests.length > 0) {
+                // Progression logic: compare first and last
+                const first = user.tests[0];
+                const last = user.tests[user.tests.length - 1];
+                const progression = last.score - first.score;
+                const progText = progression > 0 ? `<span style="color:#e63946">↑ Stress augmenté (+${progression})</span>` : (progression < 0 ? `<span style="color:#2a9d8f">↓ Stress diminué (${progression})</span>` : "Stable");
+
+                const progDiv = document.createElement('div');
+                progDiv.style.background = '#f8f9fa';
+                progDiv.style.padding = '1rem';
+                progDiv.style.borderRadius = '8px';
+                progDiv.style.marginBottom = '2rem';
+                progDiv.innerHTML = `<strong>Analyse de progression :</strong> ${progText}`;
+                historyList.appendChild(progDiv);
+
+                // Chart integration
+                if (user.tests.length >= 2) {
+                    document.getElementById('progression-chart-section').style.display = 'block';
+                    setTimeout(() => renderUserChart(user.tests), 100);
+                } else {
+                    document.getElementById('progression-chart-section').style.display = 'none';
+                }
+
+                user.tests.slice().reverse().forEach(test => {
+                    const item = document.createElement('div');
+                    item.className = 'user-history-item';
+                    const date = new Date(test.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    item.innerHTML = `
+                        <div>
+                            <div style="font-weight:700;">${date}</div>
+                            <div style="font-size:0.9rem; color:#666;">${test.category}</div>
+                        </div>
+                        <div class="score-pill">${test.score} / 88</div>
+                    `;
+                    historyList.appendChild(item);
+                });
+            } else {
+                historyList.innerHTML = '<p style="color:#999; font-style:italic;">Aucun test réalisé pour le moment.</p>';
+                document.getElementById('progression-chart-section').style.display = 'none';
+            }
+
+            document.getElementById('userModal').style.display = 'flex';
+        }
+
+        function renderUserChart(tests) {
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            const ctx = document.getElementById('userProgressionChart').getContext('2d');
+            const labels = tests.map(t => new Date(t.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }));
+            const scores = tests.map(t => t.score);
+
+            currentChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Score d\'épuisement',
+                        data: scores,
+                        borderColor: '#3fbad9',
+                        tension: 0.3,
+                        fill: false,
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#0077b6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, max: 88 }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('userModal').style.display = 'none';
+            if (currentChart) {
+                currentChart.destroy();
+                currentChart = null;
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('userModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        fetchUsers();
+    </script>
+</body>
+</html>

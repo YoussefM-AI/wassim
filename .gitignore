@@ -1,0 +1,16 @@
+# Dépendances Node.js (Vraiment trop lourd pour GitHub)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Données locales (À ignorer si vous voulez garder les tests privés)
+# users.json
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Environnement
+.env

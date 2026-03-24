@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conseils Personnalisés - Rahti</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; color: #2b2d42; margin: 0; padding: 0; opacity: 0; animation: fadeIn 0.8s forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .site-header { width: 100%; padding: 1.5rem 4rem; display: flex; justify-content: space-between; align-items: center; background: white; box-shadow: 0 2px 15px rgba(0,0,0,0.05); box-sizing: border-box; }
+        .brand-text { font-size: 1.8rem; font-weight: 900; color: #0077b6; }
+        .nav-link { text-decoration: none; color: #444; font-weight: 600; margin-left: 2rem; }
+
+        .container { max-width: 900px; margin: 3rem auto; padding: 0 2rem; }
+        
+        .score-banner { background: white; padding: 2.5rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #eee; text-align: center; margin-bottom: 3rem; }
+        .score-circle { width: 120px; height: 120px; border-radius: 60px; background: #3fbad9; color: white; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 800; margin: 0 auto 1.5rem; box-shadow: 0 8px 20px rgba(63, 186, 217, 0.3); }
+        .score-category { font-size: 1.5rem; font-weight: 700; color: #3fbad9; margin-bottom: 0.5rem; }
+        .score-date { color: #666; font-size: 0.9rem; }
+
+        .advice-section { display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 3rem; }
+        .advice-card { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border-left: 5px solid #3fbad9; }
+        .advice-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: #0077b6; display: flex; align-items: center; gap: 0.8rem; }
+        .advice-content { color: #4a4e69; line-height: 1.7; }
+        .advice-content ul { padding-left: 1.2rem; }
+        .advice-content li { margin-bottom: 0.8rem; }
+
+        .btn-back { display: inline-block; margin-bottom: 2rem; color: #666; text-decoration: none; font-weight: 600; transition: color 0.3s; }
+        .btn-back:hover { color: #0077b6; }
+
+        /* Custom colors for levels */
+        .level-low { border-left-color: #2a9d8f; }
+        .level-mod { border-left-color: #f4a261; }
+        .level-high { border-left-color: #e63946; }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <span class="brand-text">Rahti</span>
+        <nav>
+            <a href="dashboard.html" class="nav-link">Tableau de bord</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <a href="dashboard.html" class="btn-back">← Retour au Dashboard</a>
+        
+        <div id="no-test-msg" style="display: none; text-align: center; padding: 4rem; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+            <h2 style="color: #666;">Vous n'avez pas encore passé de test.</h2>
+            <p>Passez votre premier test pour recevoir des conseils personnalisés.</p>
+            <br>
+            <a href="test.html" style="background:#3fbad9; color:white; padding:1rem 2rem; border-radius:8px; text-decoration:none; font-weight:bold;">Passer le test maintenant</a>
+        </div>
+
+        <div id="content-container">
+            <div class="score-banner">
+                <div id="score-val" class="score-circle">-</div>
+                <div id="score-cat" class="score-category">Chargement...</div>
+                <div id="score-date" class="score-date">Analyse en cours</div>
+            </div>
+
+            <div class="advice-section" id="advice-list">
+                <!-- Advice cards will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADVICE_DATA = {
+            low: {
+                title: "Excellente nouvelle !",
+                color: "level-low",
+                description: "Votre niveau d'épuisement est actuellement bas. C'est le moment idéal pour renforcer vos défenses psychologiques et maintenir cet équilibre.",
+                tips: [
+                    "<strong>Maintenez vos limites</strong> : Continuez à bien séparer vie pro et vie perso.",
+                    "<strong>Pratiquez la gratitude</strong> : Prenez 5 minutes chaque soir pour noter 3 choses positives de votre journée.",
+                    "<strong>Sommeil régulier</strong> : Visez au moins 7h30 de sommeil par nuit pour consolider cette résilience."
+                ]
+            },
+            beginning: {
+                title: "Attention, premiers signes",
+                color: "level-mod",
+                description: "On observe quelques signes de fatigue. Votre corps et votre esprit commencent à envoyer des alertes. Il est encore temps d'agir préventivement.",
+                tips: [
+                    "<strong>Micro-pauses</strong> : Pratiquez la règle du 20-20-20 (toutes les 20 min, regardez à 20 pieds pendant 20 secondes) et bougez régulièrement.",
+                    "<strong>Apprenez à dire non</strong> : Ne surchargez pas votre emploi du temps avec des engagements non essentiels.",
+                    "<strong>Activité physique</strong> : Une marche de 20 minutes en extérieur peut réduire significativement le cortisol."
+                ]
+            },
+            moderate: {
+                title: "Action requise : Ralentissez",
+                color: "level-mod",
+                description: "Votre score indique un épuisement modéré. Votre réserve d'énergie est entamée. Il est crucial d'ajuster votre rythme pour éviter la rupture.",
+                tips: [
+                    "<strong>Consultez un professionnel</strong> : Discuter avec un psychologue ou un médecin du travail peut vous aider à voir plus clair.",
+                    "<strong>Déconnexion totale</strong> : Éteignez vos notifications professionnelles dès que vous quittez votre poste.",
+                    "<strong>Priorisation drastique</strong> : Concentrez-vous uniquement sur les tâches vitales. Reportez le reste."
+                ]
+            },
+            severe: {
+                title: "Priorité absolue : Votre santé",
+                color: "level-high",
+                description: "Votre score indique un épuisement sévère. Vous êtes en zone de danger immédiat pour votre santé mentale et physique.",
+                tips: [
+                    "<strong>CONSULTEZ IMMÉDIATEMENT</strong> : Prenez rendez-vous avec votre médecin traitant pour discuter d'un éventuel arrêt de travail.",
+                    "<strong>Repos complet</strong> : Arrêtez toute activité stressante immédiatement. Votre priorité est la récupération.",
+                    "<strong>Soutien social</strong> : Ne restez pas seul. Parlez de votre état à vos proches de confiance."
+                ]
+            }
+        };
+
+        async function initPage() {
+            try {
+                const response = await fetch('/api/user');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const user = data.user;
+                    if (!user.tests || user.tests.length === 0) {
+                        document.getElementById('content-container').style.display = 'none';
+                        document.getElementById('no-test-msg').style.display = 'block';
+                        return;
+                    }
+
+                    const lastTest = user.tests[user.tests.length - 1];
+                    displayAdvice(lastTest);
+                } else {
+                    window.location.href = 'connexion.html';
+                }
+            } catch (error) {
+                console.error('Failed to load advice:', error);
+            }
+        }
+
+        function displayAdvice(test) {
+            const score = test.score;
+            document.getElementById('score-val').textContent = score;
+            document.getElementById('score-cat').textContent = test.category;
+            
+            const dateStr = new Date(test.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('score-date').textContent = `Basé sur votre test du ${dateStr}`;
+
+            let advice;
+            if (score <= 22) advice = ADVICE_DATA.low;
+            else if (score <= 44) advice = ADVICE_DATA.beginning;
+            else if (score <= 66) advice = ADVICE_DATA.moderate;
+            else advice = ADVICE_DATA.severe;
+
+            document.getElementById('score-cat').style.color = (advice.color === 'level-high' ? '#e63946' : (advice.color === 'level-mod' ? '#f4a261' : '#2a9d8f'));
+            document.getElementById('score-val').style.background = (advice.color === 'level-high' ? '#e63946' : (advice.color === 'level-mod' ? '#f4a261' : '#3fbad9'));
+
+            const list = document.getElementById('advice-list');
+            list.innerHTML = `
+                <div class="advice-card ${advice.color}">
+                    <div class="advice-title">💡 ${advice.title}</div>
+                    <div class="advice-content">
+                        <p>${advice.description}</p>
+                    </div>
+                </div>
+                <div class="advice-card ${advice.color}">
+                    <div class="advice-title">🚀 Nos recommandations</div>
+                    <div class="advice-content">
+                        <ul>
+                            ${advice.tips.map(tip => `<li>${tip}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        initPage();
+    </script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord - Rahti</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; color: #2b2d42; opacity: 0; animation: fadeIn 0.8s forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Header styling from the main site */
+        .site-header { width: 100%; padding: 1.5rem 4rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; background: rgba(248, 245, 230, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); border-bottom: 1px solid rgba(0, 0, 0, 0.03); box-sizing: border-box; }
+        .brand-text { font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #0077b6, #00b4d8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; text-shadow: 0 2px 10px rgba(0, 119, 182, 0.1); }
+        .header-nav { display: flex; gap: 2rem; align-items: center; }
+        .nav-link { text-decoration: none; color: #444; font-weight: 600; font-size: 1rem; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; position: relative; }
+        .nav-link::after { content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); width: 0; height: 3px; background: linear-gradient(90deg, #0077b6, #00b4d8); transition: width 0.3s ease; border-radius: 4px; }
+        .nav-link:hover { color: #3fbad9; }
+        .nav-link:hover::after { width: 80%; }
+        .nav-btn { background-color: #3fbad9; color: white; padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; font-weight: bold; transition: background 0.3s; text-transform: uppercase; font-size: 0.95rem; }
+        .nav-btn:hover { background-color: #2b9bb5; }
+        .nav-logout { color: #e63946; }
+        .nav-logout:hover { color: #d00000; }
+        .nav-logout::after { background: #e63946; }
+
+        /* Dashboard Content */
+        .container { max-width: 1200px; margin: 3rem auto; padding: 0 2rem; }
+        .page-title { font-size: 2rem; font-weight: 800; margin-bottom: 2rem; }
+        
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); transition: transform 0.3s ease; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-title { font-size: 0.95rem; color: #6c757d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .stat-value { font-size: 2.5rem; font-weight: 800; color: #3fbad9; }
+        .stat-desc { font-size: 0.9rem; color: #444; margin-top: 0.5rem; }
+
+        /* Chart Section */
+        .chart-section { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); margin-bottom: 3rem; }
+        .chart-container { height: 300px; width: 100%; position: relative; }
+
+        /* Two columns layout for Last Test and History */
+        .dashboard-main { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        
+        .section-card { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
+        .section-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem; border-bottom: 2px solid #f1f3f5; padding-bottom: 1rem; }
+        
+        /* Last test details */
+        .test-detail { display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid #f8f9fa; }
+        .test-detail:last-child { border-bottom: none; }
+        .detail-label { font-weight: 600; color: #444; }
+        .detail-value { font-weight: 700; color: #2b2d42; }
+        
+        /* History table */
+        .history-list { list-style: none; padding: 0; margin: 0; }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-radius: 8px; background: #f8f9fa; margin-bottom: 1rem; transition: transform 0.2s; }
+        .history-item:hover { transform: translateX(5px); background: #f1f3f5; }
+        .history-date { font-weight: 600; color: #444; }
+        .history-score { background: #3fbad9; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
+
+        /* Action Buttons */
+        .actions-wrapper { margin-top: 2rem; display: flex; gap: 1rem; }
+        .btn-primary { background-color: #3fbad9; color: white; padding: 0.8rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: bold; transition: background 0.3s; text-align: center; display: inline-block; cursor: pointer; border: none; font-size: 1rem; }
+        .btn-primary:hover { background-color: #2b9bb5; }
+        .btn-secondary { background-color: #f8f9fa; color: #444; padding: 0.8rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: bold; transition: background 0.3s; border: 1px solid #ddd; text-align: center; display: inline-block; }
+        .btn-secondary:hover { background-color: #e9ecef; }
+        
+        @media (max-width: 768px) {
+            .dashboard-main { grid-template-columns: 1fr; }
+            .site-header { flex-direction: column; gap: 1rem; padding: 1rem; }
+            .header-nav { flex-wrap: wrap; justify-content: center; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-left">
+            <span class="brand-text">Rahti</span>
+        </div>
+        <nav class="header-nav">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="conseils.html" class="nav-link">Conseils</a>
+            <a href="test.html" class="nav-btn">Nouveau Test</a>
+            <a href="/logout" class="nav-link nav-logout">Déconnexion</a>
+        </nav>
+    </header>
+
+    <!-- Main Dashboard -->
+    <div class="container">
+        <h1 class="page-title" id="welcome-msg">Bonjour, bienvenue sur votre tableau de bord</h1>
+        
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-title">Tests réalisés</div>
+                <div id="stat-count" class="stat-value">0</div>
+                <div class="stat-desc">Depuis votre inscription</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Date du dernier test</div>
+                <div id="stat-date" class="stat-value" style="font-size: 1.8rem; line-height: 1.4;">Aucun test</div>
+                <div id="stat-days" class="stat-desc">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Niveau Actuel</div>
+                <div id="stat-level" class="stat-value" style="color: #0077b6;">-</div>
+                <div class="stat-desc">Dernier résultat obtenu</div>
+            </div>
+        </div>
+
+        <div class="dashboard-main">
+            <!-- Last Test Section -->
+            <div class="section-card">
+                <h2 class="section-title">Détails du dernier test</h2>
+                <div id="last-test-details">
+                    <div class="test-detail">
+                        <span class="detail-label">Score global</span>
+                        <span id="detail-score" class="detail-value">-</span>
+                    </div>
+                    <div class="test-detail">
+                        <span class="detail-label">Niveau de stress / charge</span>
+                        <span id="detail-level" class="detail-value">-</span>
+                    </div>
+                </div>
+                
+                <div class="actions-wrapper">
+                    <button class="btn-primary" onclick="showNotification('Affichage du détail complet bientôt disponible !', 'info')">Voir le détail complet</button>
+                    <a href="conseils.html" class="btn-secondary">Voir mes conseils</a>
+                </div>
+            </div>
+
+            <!-- History Section -->
+            <div class="section-card">
+                <h2 class="section-title">Historique de tous vos tests</h2>
+                <ul id="history-container" class="history-list">
+                    <!-- Dynamic history items will go here -->
+                </ul>
+                <div class="actions-wrapper" style="margin-top: 1.5rem;">
+                    <a href="test.html" class="btn-primary" style="width: 100%;">Passer un nouveau test</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progression Chart -->
+        <div class="chart-section" id="chart-section" style="display: none; margin-top: 2rem;">
+            <h2 class="section-title">Évolution de votre niveau de stress</h2>
+            <div class="chart-container">
+                <canvas id="progressionChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="notification-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+
+    <script>
+        // Toast Notification System
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notification-container');
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? '#2a9d8f' : (type === 'error' ? '#e63946' : '#3fbad9');
+            
+            toast.style.cssText = `
+                background: ${bgColor};
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                margin-bottom: 10px;
+                font-weight: 600;
+                transform: translateX(120%);
+                transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            `;
+            
+            const icon = type === 'success' ? '✅' : (type === 'error' ? '❌' : 'ℹ️');
+            toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.transform = 'translateX(0)'; }, 10);
+            setTimeout(() => {
+                toast.style.transform = 'translateX(120%)';
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
+        }
+
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/user');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const user = data.user;
+                    const firstName = user.name.split(' ')[0];
+                    document.getElementById('welcome-msg').textContent = `Bonjour ${firstName}, bienvenue sur votre tableau de bord !`;
+                    
+                    if (user.tests && user.tests.length > 0) {
+                        const originalTests = user.tests;
+                        const reversedTests = [...originalTests].reverse(); // Newest first
+                        const lastTest = reversedTests[0];
+
+                        // Update Stats
+                        document.getElementById('stat-count').textContent = user.tests.length;
+                        
+                        const lastDate = new Date(lastTest.date);
+                        const options = { day: 'numeric', month: 'short', year: 'numeric' };
+                        document.getElementById('stat-date').textContent = lastDate.toLocaleDateString('fr-FR', options);
+                        
+                        const diffTime = Math.abs(new Date() - lastDate);
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        document.getElementById('stat-days').textContent = diffDays === 0 ? "Aujourd'hui" : `Il y a ${diffDays} jour(s)`;
+                        
+                        document.getElementById('stat-level').textContent = lastTest.category.replace(/[^a-zA-Z\s]/g, '').trim();
+                        
+                        // Last Test Details
+                        document.getElementById('detail-score').textContent = `${lastTest.score} / 88`;
+                        document.getElementById('detail-level').textContent = lastTest.category;
+                        document.getElementById('detail-level').style.color = lastTest.category.includes('élevé') ? '#e63946' : (lastTest.category.includes('modéré') ? '#f4a261' : '#2a9d8f');
+
+                        // Render Chart
+                        if (user.tests.length >= 2) {
+                            document.getElementById('chart-section').style.display = 'block';
+                            renderChart(originalTests);
+                        }
+
+                        // History List
+                        const historyContainer = document.getElementById('history-container');
+                        historyContainer.innerHTML = '';
+                        reversedTests.forEach(test => {
+                            const li = document.createElement('li');
+                            li.className = 'history-item';
+                            const tDate = new Date(test.date).toLocaleDateString('fr-FR', options);
+                            const color = test.category.includes('élevé') ? '#e63946' : (test.category.includes('modéré') ? '#f4a261' : '#3fbad9');
+                            
+                            li.innerHTML = `
+                                <span class="history-date">${tDate}</span>
+                                <span class="history-score" style="background: ${color}">${test.category} (Score: ${test.score})</span>
+                            `;
+                            historyContainer.appendChild(li);
+                        });
+                    } else {
+                        document.getElementById('history-container').innerHTML = '<p style="color: #6c757d; font-style: italic;">Vous n\'avez pas encore passé de test.</p>';
+                    }
+                } else {
+                    window.location.href = 'connexion.html';
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                window.location.href = 'connexion.html';
+            }
+        }
+
+        function renderChart(tests) {
+            const ctx = document.getElementById('progressionChart').getContext('2d');
+            const labels = tests.slice(-10).map(t => new Date(t.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }));
+            const scores = tests.slice(-10).map(t => t.score);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Score d\'épuisement (Max 88)',
+                        data: scores,
+                        borderColor: '#3fbad9',
+                        backgroundColor: 'rgba(63, 186, 217, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#3fbad9',
+                        pointRadius: 5,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, max: 88, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+        checkAuth();
+    </script>
+
+</body>
+</html>
