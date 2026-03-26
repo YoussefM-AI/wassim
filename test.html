@@ -62,10 +62,16 @@
         .level-tag { display:inline-block; padding: 0.2rem 0.6rem; border-radius: 6px; font-weight: 700; color: white; margin-right: 0.5rem; }
     </style>
 </head>
-<body>
-    <a href="dashboard.html" class="retour">← Retour au Dashboard</a>
+<body style="padding-top: 0;">
+    <!-- Site Header -->
+    <header style="width:100%; padding:1rem 4rem; display:flex; justify-content:space-between; align-items:center; background:white; box-shadow:0 2px 10px rgba(0,0,0,0.05); box-sizing:border-box; margin-bottom: 2rem;">
+        <div class="header-left">
+            <a href="home.html" style="text-decoration: none; font-size: 1.8rem; font-weight: 900; background: linear-gradient(135deg, #0077b6, #00b4d8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Rahti</a>
+        </div>
+        <a href="dashboard.html" style="text-decoration:none; color:#666; font-weight:600;">← Retour au Dashboard</a>
+    </header>
     
-    <div class="info-btn" onclick="showInfo()" title="Comprendre le test">i</div>
+    <div class="info-btn" onclick="showInfo()" title="Comprendre le test" style="top: 5rem;">i</div>
 
     <div id="info-modal" onclick="if(event.target === this) closeInfo()">
         <div class="modal-body">

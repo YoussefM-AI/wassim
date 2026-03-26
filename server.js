@@ -52,8 +52,8 @@ app.use(session({
 }));
 
 // Home route
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "wassim.html"));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'home.html'));
 });
 
 // Get current user info (including history)
