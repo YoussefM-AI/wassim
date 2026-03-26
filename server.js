@@ -88,6 +88,60 @@ app.get("/api/admin/users", async (req, res) => {
   }
 });
 
+// Admin API: Delete a user
+app.delete("/api/admin/user/:id", async (req, res) => {
+  if (req.session.user && req.session.user.role === 'admin') {
+    try {
+      const { id } = req.params;
+      
+      // Prevent self-deletion
+      const userToDelete = await User.findById(id);
+      if (userToDelete && userToDelete.email === req.session.user.email) {
+        return res.status(400).json({ success: false, message: "You cannot delete your own admin account." });
+      }
+
+      const result = await User.findByIdAndDelete(id);
+      if (result) {
+        res.json({ success: true, message: "User deleted successfully" });
+      } else {
+        res.status(404).json({ success: false, message: "User not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Server error during deletion" });
+    }
+  } else {
+    res.status(403).json({ success: false, message: "Forbidden" });
+  }
+});
+
+// Admin API: Toggle user role (user <-> admin)
+app.post("/api/admin/user/toggle-role/:id", async (req, res) => {
+  if (req.session.user && req.session.user.role === 'admin') {
+    try {
+      const { id } = req.params;
+      const user = await User.findById(id);
+      if (!user) {
+        return res.status(404).json({ success: false, message: "User not found" });
+      }
+
+      // Prevent self-demotion
+      if (user.email === req.session.user.email) {
+        return res.status(400).json({ success: false, message: "You cannot change your own role." });
+      }
+
+      // Toggle role
+      user.role = (user.role === 'admin') ? 'user' : 'admin';
+      await user.save();
+      
+      res.json({ success: true, message: `Role changed to ${user.role}`, newRole: user.role });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Server error during role toggle" });
+    }
+  } else {
+    res.status(403).json({ success: false, message: "Forbidden" });
+  }
+});
+
 // Save test result
 app.post("/api/save-test", async (req, res) => {
   if (!req.session.user) {
@@ -180,7 +234,7 @@ app.post("/login", async (req, res) => {
 // Logout route
 app.get("/logout", (req, res) => {
   req.session.destroy();
-  res.redirect("/wassim.html");
+  res.redirect("/home.html");
 });
 
 const PORT = process.env.PORT || 3001;
