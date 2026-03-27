@@ -182,33 +182,33 @@
                 <button onclick="closeSettings()" style="border:none; background:none; font-size:1.5rem; cursor:pointer; color:#666;">×</button>
             </div>
             
-            <form id="update-profile-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <form id="update-profile-form" class="profile-grid">
                 <div style="grid-column: span 2;">
                     <label style="display:block; font-weight:600; font-size: 0.9rem; margin-bottom: 0.4rem;">Nom Complet</label>
-                    <input type="text" name="name" id="edit-name" required style="width:100%; padding:0.7rem; border:1px solid #ddd; border-radius:8px;">
+                    <input type="text" name="name" id="edit-name" required>
                 </div>
                 <div>
                     <label style="display:block; font-weight:600; font-size: 0.9rem; margin-bottom: 0.4rem;">Âge</label>
-                    <input type="number" name="age" id="edit-age" style="width:100%; padding:0.7rem; border:1px solid #ddd; border-radius:8px;">
+                    <input type="number" name="age" id="edit-age">
                 </div>
                 <div>
                     <label style="display:block; font-weight:600; font-size: 0.9rem; margin-bottom: 0.4rem;">Sexe</label>
-                    <select name="sexe" id="edit-sexe" style="width:100%; padding:0.7rem; border:1px solid #ddd; border-radius:8px;">
+                    <select name="sexe" id="edit-sexe">
                         <option value="H">Homme</option>
                         <option value="F">Femme</option>
                     </select>
                 </div>
                 <div style="grid-column: span 2;">
                     <label style="display:block; font-weight:600; font-size: 0.9rem; margin-bottom: 0.4rem;">Hôpital</label>
-                    <input type="text" name="hopital" id="edit-hopital" style="width:100%; padding:0.7rem; border:1px solid #ddd; border-radius:8px;">
+                    <input type="text" name="hopital" id="edit-hopital">
                 </div>
                 <div>
                     <label style="display:block; font-weight:600; font-size: 0.9rem; margin-bottom: 0.4rem;">Service</label>
-                    <input type="text" name="service" id="edit-service" style="width:100%; padding:0.7rem; border:1px solid #ddd; border-radius:8px;">
+                    <input type="text" name="service" id="edit-service">
                 </div>
                 <div>
                     <label style="display:block; font-weight:600; font-size: 0.9rem; margin-bottom: 0.4rem;">Expérience (ans)</label>
-                    <input type="number" name="experience" id="edit-experience" style="width:100%; padding:0.7rem; border:1px solid #ddd; border-radius:8px;">
+                    <input type="number" name="experience" id="edit-experience">
                 </div>
                 <button type="submit" class="btn-primary" style="grid-column: span 2; margin-top: 1rem;">Enregistrer les modifications</button>
             </form>
@@ -217,10 +217,10 @@
                 <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Changer le mot de passe</h3>
                 <form id="change-password-form">
                     <div style="margin-bottom:1rem;">
-                        <input type="password" id="currentPassword" placeholder="Ancien mot de passe" required style="width:100%; padding:0.7rem; border:1px solid #ddd; border-radius:8px;">
+                        <input type="password" id="currentPassword" placeholder="Ancien mot de passe" required>
                     </div>
                     <div style="margin-bottom:1rem;">
-                        <input type="password" id="newPassword" placeholder="Nouveau mot de passe (min 6 car.)" required minlength="6" style="width:100%; padding:0.7rem; border:1px solid #ddd; border-radius:8px;">
+                        <input type="password" id="newPassword" placeholder="Nouveau mot de passe (min 6 car.)" required minlength="6">
                     </div>
                     <button type="submit" class="btn-secondary" style="width:100%;">Mettre à jour le mot de passe</button>
                 </form>
@@ -240,6 +240,28 @@
         .dim-card { background: #f8f9fa; padding: 1rem; border-radius: 12px; text-align: center; }
         .dim-val { font-size: 1.5rem; font-weight: 800; color: #3fbad9; }
         .dim-name { font-size: 0.8rem; text-transform: uppercase; color: #666; font-weight: 700; }
+        /* Settings Modal Styling */
+        #settings-modal-content input, 
+        #settings-modal-content select { 
+            box-sizing: border-box; 
+            width: 100%; 
+            padding: 0.75rem 1rem; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 10px; 
+            font-size: 0.95rem; 
+            transition: all 0.2s;
+        }
+        #settings-modal-content input:focus, 
+        #settings-modal-content select:focus {
+            border-color: #3fbad9;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(63, 186, 217, 0.1);
+        }
+        .profile-grid {
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 1.5rem;
+        }
     </style>
 
     <script>

@@ -45,70 +45,67 @@
     <div class="container">
         <a href="dashboard.html" class="btn-back">← Retour au Dashboard</a>
         
-        <div id="no-test-msg" style="display: none; text-align: center; padding: 4rem; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-            <h2 style="color: #666;">Vous n'avez pas encore passé de test.</h2>
-            <p>Passez votre premier test pour recevoir des conseils personnalisés.</p>
-            <br>
-            <a href="test.html" style="background:#3fbad9; color:white; padding:1rem 2rem; border-radius:8px; text-decoration:none; font-weight:bold;">Passer le test maintenant</a>
+        <div id="test-banner" style="display: none; background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #eee; text-align: center; margin-bottom: 3rem;">
+            <div id="score-val" class="score-circle">-</div>
+            <div id="score-cat" class="score-category">Chargement...</div>
+            <div id="score-date" class="score-date">Analyse en cours</div>
         </div>
 
-        <div id="content-container">
-            <div class="score-banner">
-                <div id="score-val" class="score-circle">-</div>
-                <div id="score-cat" class="score-category">Chargement...</div>
-                <div id="score-date" class="score-date">Analyse en cours</div>
+        <div style="text-align: center; margin-bottom: 4rem;">
+            <h1 style="font-size: 2.5rem; font-weight: 800; color: #2d3748; margin-bottom: 1rem;">Guide des Conseils de Prévention</h1>
+            <p style="color: #64748b; font-size: 1.1rem; max-width: 600px; margin: 0 auto;">Découvrez nos recommandations adaptées à chaque état de fatigue pour préserver votre bien-être professionnel.</p>
+        </div>
+
+        <div class="advice-section">
+            <!-- Low Risk -->
+            <div class="advice-card level-low">
+                <div class="advice-title">🟢 Risque Faible : Équilibre & Prévention</div>
+                <div class="advice-content">
+                    <p>Votre niveau d'énergie est bon. C'est le moment idéal pour ancrer des habitudes de bien-être durables.</p>
+                    <h4 style="color: #2a9d8f; margin: 1.5rem 0 0.8rem;">Nos recommandations :</h4>
+                    <ul>
+                        <li><strong>Limites Claire</strong> : Maintenez une distinction stricte entre vos heures de travail et votre temps personnel.</li>
+                        <li><strong>Rituels de Déconnexion</strong> : Créez une transition (marche, lecture) pour "fermer" mentalement votre journée.</li>
+                        <li><strong>Célébration</strong> : Notez vos petites réussites quotidiennes pour renforcer votre sentiment d'auto-efficacité.</li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="advice-section" id="advice-list">
-                <!-- Advice cards will be injected here -->
+            <!-- Moderate Risk -->
+            <div class="advice-card level-mod">
+                <div class="advice-title">🟠 Risque Modéré : Vigilance & Ajustement</div>
+                <div class="advice-content">
+                    <p>Vous commencez à ressentir une fatigue qui pèse. Votre corps vous signale qu'il est temps d'ajuster votre charge.</p>
+                    <h4 style="color: #f4a261; margin: 1.5rem 0 0.8rem;">Nos recommandations :</h4>
+                    <ul>
+                        <li><strong>Délégation</strong> : Identifiez les tâches non essentielles que vous pouvez reporter ou déléguer.</li>
+                        <li><strong>Sommeil Réparateur</strong> : Priorisez une routine de sommeil sans écrans 1h avant le coucher.</li>
+                        <li><strong>Communication</strong> : Parlez de votre charge de travail à votre superviseur ou vos collègues de confiance.</li>
+                    </ul>
+                </div>
             </div>
+
+            <!-- High Risk -->
+            <div class="advice-card level-high">
+                <div class="advice-title">🔴 Risque Élevé : Urgence & Action</div>
+                <div class="advice-content">
+                    <p>Votre état nécessite une attention immédiate. Il est crucial de ne pas ignorer ces signaux d'alerte critiques.</p>
+                    <h4 style="color: #e63946; margin: 1.5rem 0 0.8rem;">Nos recommandations :</h4>
+                    <ul>
+                        <li><strong>Consultation Médicale</strong> : Prenez rendez-vous avec votre médecin traitant ou un médecin du travail sans attendre.</li>
+                        <li><strong>Soutien Psychologique</strong> : Un accompagnement professionnel peut vous aider à traverser cette période difficile.</li>
+                        <li><strong>Pause Immédiate</strong> : Envisagez sérieusement un arrêt de travail pour permettre une récupération réelle et profonde.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 4rem;">
+            <p style="color: #94a3b8; font-size: 0.9rem;"><em>Ces conseils sont donnés à titre indicatif et ne remplacent pas un avis médical professionnel.</em></p>
         </div>
     </div>
 
     <script>
-        const ADVICE_DATA = {
-            low: {
-                title: "Excellente nouvelle !",
-                color: "level-low",
-                description: "Votre niveau d'épuisement est actuellement bas. C'est le moment idéal pour renforcer vos défenses psychologiques et maintenir cet équilibre.",
-                tips: [
-                    "<strong>Maintenez vos limites</strong> : Continuez à bien séparer vie pro et vie perso.",
-                    "<strong>Pratiquez la gratitude</strong> : Prenez 5 minutes chaque soir pour noter 3 choses positives de votre journée.",
-                    "<strong>Sommeil régulier</strong> : Visez au moins 7h30 de sommeil par nuit pour consolider cette résilience."
-                ]
-            },
-            beginning: {
-                title: "Attention, premiers signes",
-                color: "level-mod",
-                description: "On observe quelques signes de fatigue. Votre corps et votre esprit commencent à envoyer des alertes. Il est encore temps d'agir préventivement.",
-                tips: [
-                    "<strong>Micro-pauses</strong> : Pratiquez la règle du 20-20-20 (toutes les 20 min, regardez à 20 pieds pendant 20 secondes) et bougez régulièrement.",
-                    "<strong>Apprenez à dire non</strong> : Ne surchargez pas votre emploi du temps avec des engagements non essentiels.",
-                    "<strong>Activité physique</strong> : Une marche de 20 minutes en extérieur peut réduire significativement le cortisol."
-                ]
-            },
-            moderate: {
-                title: "Action requise : Ralentissez",
-                color: "level-mod",
-                description: "Votre score indique un épuisement modéré. Votre réserve d'énergie est entamée. Il est crucial d'ajuster votre rythme pour éviter la rupture.",
-                tips: [
-                    "<strong>Consultez un professionnel</strong> : Discuter avec un psychologue ou un médecin du travail peut vous aider à voir plus clair.",
-                    "<strong>Déconnexion totale</strong> : Éteignez vos notifications professionnelles dès que vous quittez votre poste.",
-                    "<strong>Priorisation drastique</strong> : Concentrez-vous uniquement sur les tâches vitales. Reportez le reste."
-                ]
-            },
-            severe: {
-                title: "Priorité absolue : Votre santé",
-                color: "level-high",
-                description: "Votre score indique un épuisement sévère. Vous êtes en zone de danger immédiat pour votre santé mentale et physique.",
-                tips: [
-                    "<strong>CONSULTEZ IMMÉDIATEMENT</strong> : Prenez rendez-vous avec votre médecin traitant pour discuter d'un éventuel arrêt de travail.",
-                    "<strong>Repos complet</strong> : Arrêtez toute activité stressante immédiatement. Votre priorité est la récupération.",
-                    "<strong>Soutien social</strong> : Ne restez pas seul. Parlez de votre état à vos proches de confiance."
-                ]
-            }
-        };
-
         async function initPage() {
             try {
                 const response = await fetch('/api/user');
@@ -116,56 +113,34 @@
                 
                 if (data.success) {
                     const user = data.user;
-                    if (!user.tests || user.tests.length === 0) {
-                        document.getElementById('content-container').style.display = 'none';
-                        document.getElementById('no-test-msg').style.display = 'block';
-                        return;
+                    if (user.tests && user.tests.length > 0) {
+                        const lastTest = user.tests[user.tests.length - 1];
+                        displayBanner(lastTest);
                     }
-
-                    const lastTest = user.tests[user.tests.length - 1];
-                    displayAdvice(lastTest);
                 } else {
                     window.location.href = 'connexion.html';
                 }
             } catch (error) {
-                console.error('Failed to load advice:', error);
+                console.error('Failed to load user data:', error);
             }
         }
 
-        function displayAdvice(test) {
+        function displayBanner(test) {
             const score = test.score;
-            document.getElementById('score-val').textContent = score;
+            const banner = document.getElementById('test-banner');
+            banner.style.display = 'block';
+            
+            const scoreVal = document.getElementById('score-val');
+            scoreVal.textContent = score;
             document.getElementById('score-cat').textContent = test.category;
             
             const dateStr = new Date(test.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-            document.getElementById('score-date').textContent = `Basé sur votre test du ${dateStr}`;
+            document.getElementById('score-date').textContent = `Dernier test réalisé le ${dateStr}`;
 
-            let advice;
-            if (score <= 22) advice = ADVICE_DATA.low;
-            else if (score <= 44) advice = ADVICE_DATA.beginning;
-            else if (score <= 66) advice = ADVICE_DATA.moderate;
-            else advice = ADVICE_DATA.severe;
-
-            document.getElementById('score-cat').style.color = (advice.color === 'level-high' ? '#e63946' : (advice.color === 'level-mod' ? '#f4a261' : '#2a9d8f'));
-            document.getElementById('score-val').style.background = (advice.color === 'level-high' ? '#e63946' : (advice.color === 'level-mod' ? '#f4a261' : '#3fbad9'));
-
-            const list = document.getElementById('advice-list');
-            list.innerHTML = `
-                <div class="advice-card ${advice.color}">
-                    <div class="advice-title">💡 ${advice.title}</div>
-                    <div class="advice-content">
-                        <p>${advice.description}</p>
-                    </div>
-                </div>
-                <div class="advice-card ${advice.color}">
-                    <div class="advice-title">🚀 Nos recommandations</div>
-                    <div class="advice-content">
-                        <ul>
-                            ${advice.tips.map(tip => `<li>${tip}</li>`).join('')}
-                        </ul>
-                    </div>
-                </div>
-            `;
+            // Colorize based on score
+            const color = score <= 29 ? '#2a9d8f' : (score <= 59 ? '#f4a261' : '#e63946');
+            scoreVal.style.background = color;
+            document.getElementById('score-cat').style.color = color;
         }
 
         initPage();
