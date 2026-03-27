@@ -296,19 +296,19 @@
 
         const ADVICE = {
             low: {
-                title: "Équilibre en Unité",
-                desc: "Votre niveau d'épuisement est bas. Vous maintenez une bonne distance thérapeutique et un engagement serein dans vos soins.",
-                tips: ["Relève de poste structurée", "Micro-pauses hydratation", "Gestion du stress en équipe"]
+                title: "🟢 Stress léger",
+                desc: "Votre niveau d'épuisement est bas. C'est le moment idéal pour renforcer vos outils de prévention et maintenir votre équilibre.",
+                tips: []
             },
             mod: {
-                title: "Alerte de Charge Mentale",
-                desc: "Des signes de fatigue liés à la charge de soins apparaissent. Il est temps d'ajuster votre rythme avant d'atteindre la saturation.",
-                tips: ["Priorisation des soins critiques", "Communication au cadre", "Temps de déconnexion post-garde"]
+                title: "🟠 Stress modéré",
+                desc: "Des signes de fatigue chronique et de surcharge mentale apparaissent. Un ajustement de vos habitudes est nécessaire.",
+                tips: []
             },
             high: {
-                title: "Urgence Soignant",
-                desc: "Votre niveau d'épuisement est critique. La sécurité de vos patients et votre santé sont en jeu. Ne restez pas seul.",
-                tips: ["Médecine du travail", "Pause de service immédiate", "Soutien psychologique spécialisé"]
+                title: "🔴 Burn-out élevé",
+                desc: "Votre état est critique. La priorité absolue est votre santé et la mise en place d'un accompagnement adapté.",
+                tips: []
             }
         };
 
@@ -349,9 +349,99 @@
                 <div style="background: ${color}10; border-left: 5px solid ${color}; padding: 1.5rem; border-radius: 0 16px 16px 0; margin-bottom: 2.5rem;">
                     <h3 style="color: ${color}; margin: 0 0 0.8rem 0; font-size: 1.2rem;">💡 ${currentAdvice.title}</h3>
                     <p style="color: #4a5568; line-height: 1.6; margin-bottom: 1rem;">${currentAdvice.desc}</p>
-                    <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
                         ${currentAdvice.tips.map(tip => `<span style="background: white; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.85rem; color: #4a5568; border: 1px solid ${color}30; font-weight: 600;"># ${tip}</span>`).join('')}
                     </div>
+
+                    ${totalScore <= 29 ? `
+                    <div style="background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid #2a9d8f30; margin-top: 1.5rem;">
+                        <h4 style="margin: 0 0 1.2rem 0; color: #2a9d8f; font-size: 1.1rem; border-bottom: 2px solid #2a9d8f10; padding-bottom: 0.5rem; font-weight: 800;">✔️ Objectif : prévenir le burn-out</h4>
+                        
+                        <div style="margin-bottom: 1.5rem;">
+                            <strong style="display: block; color: #2a9d8f; margin-bottom: 0.4rem; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">🗂️ Organisation</strong>
+                            <p style="margin: 0; font-size: 0.95rem; color: #4a5568;">Faites une <span style="font-weight: 700;">to-do list</span> et classez vos tâches :</p>
+                            <ul style="margin: 0.4rem 0 0 1.2rem; font-size: 0.9rem; color: #4a5568; list-style-type: '→ '; padding-left: 0.5rem;">
+                                <li>Urgent</li>
+                                <li>Important</li>
+                                <li>Secondaire</li>
+                            </ul>
+                        </div>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <strong style="display: block; color: #e76f51; margin-bottom: 0.4rem; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">⚠️ Sensibilisation</strong>
+                            <p style="margin: 0; font-size: 0.95rem; color: #4a5568;">Apprenez à reconnaître les premiers signes :</p>
+                            <ul style="margin: 0.4rem 0 0 1.2rem; font-size: 0.9rem; color: #4a5568; list-style-type: '• '; padding-left: 0.5rem;">
+                                <li>Fatigue légère</li>
+                                <li>Stress</li>
+                                <li>Manque de concentration</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #0077b608; padding: 1rem; border-radius: 8px; border: 1px dashed #0077b630;">
+                            <strong style="display: block; color: #0077b6; margin-bottom: 0.4rem; font-size: 0.95rem; text-transform: uppercase;">🎯 Action simple</strong>
+                            <p style="margin: 0; font-size: 0.95rem; color: #4a5568;">Prenez une <span style="font-weight: 700;">pause consciente</span> aujourd'hui. Accordez-vous <span style="font-weight: 700;">5 minutes de repos</span> complet.</p>
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    ${totalScore >= 30 && totalScore <= 59 ? `
+                    <div style="background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid #f4a26130; margin-top: 1.5rem;">
+                        <h4 style="margin: 0 0 1rem 0; color: #f4a261; font-size: 1rem; display: flex; align-items: center; gap: 8px;">🧠 Exercice des Pensées</h4>
+                        <input id="pensee" placeholder="Pensée négative" style="width: 100%; padding: 0.8rem; margin-bottom: 0.8rem; border: 1px solid #edf2f7; border-radius: 8px; box-sizing: border-box;">
+                        <select id="emotion" style="width: 100%; padding: 0.8rem; margin-bottom: 0.8rem; border: 1px solid #edf2f7; border-radius: 8px; background: white; box-sizing: border-box;">
+                            <option>Stress</option>
+                            <option>Anxiété</option>
+                            <option>Colère</option>
+                            <option>Tristesse</option>
+                        </select>
+                        <input id="newPensee" placeholder="Nouvelle pensée constructive" style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 1px solid #edf2f7; border-radius: 8px; box-sizing: border-box;">
+                        <button onclick="resultExo()" style="width: 100%; padding: 0.8rem; background: #f4a261; color: white; border: none; border-radius: 8px; font-weight: 800; cursor: pointer;">Valider</button>
+                        <div id="resultExo" style="margin-top: 1rem; padding: 1rem; background: #f4a26110; border-radius: 8px; font-size: 0.9rem; display: none;"></div>
+                    </div>
+                    ` : ''}
+
+                    ${totalScore >= 60 ? `
+                    <div style="background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid #e6394630; margin-top: 1.5rem;">
+                        <h4 style="margin: 0 0 1.2rem 0; color: #e63946; font-size: 1.1rem; border-bottom: 2px solid #e6394610; padding-bottom: 0.5rem; font-weight: 800;">✔️ Objectif : protéger et accompagner</h4>
+                        
+                        <div style="background: #e6394608; padding: 1rem; border-radius: 8px; border: 1px dashed #e6394630; margin-bottom: 1.5rem;">
+                            <strong style="display: block; color: #e63946; margin-bottom: 0.4rem; font-size: 0.95rem; text-transform: uppercase;">🚨 Alerte</strong>
+                            <p style="margin: 0; font-size: 1rem; color: #1a1c1e; font-weight: 700;">Votre niveau indique un épuisement important.</p>
+                            <p style="margin: 0.5rem 0 0 0; font-size: 0.95rem; color: #4a5568;">Vous avez un besoin impératif de repos et de soutien professionnel.</p>
+                        </div>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <strong style="display: block; color: #0077b6; margin-bottom: 0.4rem; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">🧠 Identification des émotions</strong>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
+                                <span style="background: #f8fafc; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.9rem; border: 1px solid #edf2f7;">Tristesse 😔</span>
+                                <span style="background: #f8fafc; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.9rem; border: 1px solid #edf2f7;">Colère 😡</span>
+                                <span style="background: #f8fafc; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.9rem; border: 1px solid #edf2f7;">Fatigue 😴</span>
+                                <span style="background: #f8fafc; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.9rem; border: 1px solid #edf2f7;">Vide 😶</span>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <strong style="display: block; color: #2a9d8f; margin-bottom: 0.4rem; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">🗣️ Expression</strong>
+                            <ul style="margin: 0.4rem 0 0 1.2rem; font-size: 0.95rem; color: #4a5568; list-style-type: '💬 '; padding-left: 0.5rem;">
+                                <li>Écrivez ce que vous ressentez</li>
+                                <li>Parlez à une personne de confiance</li>
+                            </ul>
+                        </div>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <strong style="display: block; color: #f4a261; margin-bottom: 0.4rem; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;">🛠️ Solution simple</strong>
+                            <ul style="margin: 0.4rem 0 0 1.2rem; font-size: 0.95rem; color: #4a5568; list-style-type: '🎯 '; padding-left: 0.5rem;">
+                                <li>Identifiez un seul problème</li>
+                                <li>Choisissez une seule action</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #0077b608; padding: 1rem; border-radius: 8px; border: 1px solid #0077b630;">
+                            <strong style="display: block; color: #0077b6; margin-bottom: 0.4rem; font-size: 0.95rem; text-transform: uppercase;">👩‍⚕️ Aide professionnelle</strong>
+                            <p style="margin: 0; font-size: 0.95rem; color: #4a5568;">Consultez un <span style="font-weight: 700;">psychologue</span> ou un médecin si nécessaire. Ne restez pas seul.</p>
+                        </div>
+                    </div>
+                    ` : ''}
                 </div>
 
                 <div style="display: flex; gap: 1rem; align-items: center;">
@@ -360,6 +450,63 @@
                 </div>
             </div>
         `;
+    }
+
+    function simulateTest(score) {
+        // Mock MBI-22 answers to hit the target score logic
+        userAnswers = Array(22).fill(0);
+        if (score <= 10) {
+            // All zeros for EE/DP, all max for PA (reversed)
+            userAnswers = Array(22).fill(0).map((v, i) => i >= 15 ? 4 : 0);
+        } else if (score <= 45) {
+            // Mid values for all items
+            userAnswers = Array(22).fill(2);
+        } else {
+            // High values for EE/DP, low for PA (reversed)
+            userAnswers = Array(22).fill(5).map((v, i) => i >= 15 ? 0 : 5);
+        }
+
+        // IMPORTANT: Update global totalScore so showResult uses correctly
+        const ee = userAnswers.slice(0, 8).reduce((a, b) => a + b, 0);
+        const dp = userAnswers.slice(8, 15).reduce((a, b) => a + b, 0);
+        const pa = userAnswers.slice(15, 22).reduce((a, b) => a + (4 - b), 0);
+        totalScore = ee + dp + pa;
+
+        showResult();
+    }
+
+    async function resultExo() {
+        let p = document.getElementById("pensee").value;
+        let e = document.getElementById("emotion").value;
+        let np = document.getElementById("newPensee").value;
+        let res = document.getElementById("resultExo");
+        
+        if(!p || !np) {
+            showNotification("Veuillez remplir tous les champs de l'exercice", "error");
+            return;
+        }
+
+        // Send to server
+        try {
+            const resp = await fetch('/api/user/save-exercise', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pensee: p, emotion: e, newPensee: np })
+            });
+            const data = await resp.json();
+            if (data.success) {
+                showNotification("Exercice enregistré !");
+                res.style.display = "block";
+                res.innerHTML = `
+                    <p style="margin: 0 0 0.5rem 0;"><strong>Situation initiale :</strong> ${p} (${e})</p>
+                    <p style="margin:0; color: #2a9d8f;"><strong>Nouvelle perspective :</strong> ${np}</p>
+                `;
+            } else {
+                showNotification("Erreur lors de l'enregistrement", "error");
+            }
+        } catch (error) {
+            showNotification("Erreur de connexion", "error");
+        }
     }
 
     function showInfo() { document.getElementById('info-modal').style.display = 'block'; }

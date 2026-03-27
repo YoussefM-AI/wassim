@@ -328,7 +328,10 @@
                             <div style="font-weight:700;">${date}</div>
                             <div style="font-size:0.9rem; color:#666;">${test.category}</div>
                         </div>
-                        <div class="score-pill">${test.score} / 88</div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div class="score-pill">${test.score} / 88</div>
+                            <button class="btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;" onclick="deleteTest('${user._id}', '${test._id}', ${index})" title="Supprimer ce test">🗑️</button>
+                        </div>
                     `;
                     historyList.appendChild(item);
                 });
@@ -425,6 +428,24 @@
                     }
                 } catch (error) {
                     showNotification('Erreur lors de la suppression', 'error');
+                }
+            }
+        }
+
+        async function deleteTest(userId, testId) {
+            if (confirm("Supprimer ce test de l'historique de l'utilisateur ?")) {
+                try {
+                    const response = await fetch(`/api/admin/user/${userId}/test/${testId}`, { method: 'DELETE' });
+                    const result = await response.json();
+                    if (result.success) {
+                        showNotification(result.message);
+                        closeModal();
+                        fetchUsers(); // Refresh all users to update lists and stats
+                    } else {
+                        showNotification(result.message, 'error');
+                    }
+                } catch (error) {
+                    showNotification('Erreur lors de la suppression du test', 'error');
                 }
             }
         }

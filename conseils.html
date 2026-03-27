@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conseils Personnalisés - Rahti</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">    <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; color: #2b2d42; margin: 0; padding: 0; opacity: 0; animation: fadeIn 0.8s forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -13,78 +12,207 @@
         .brand-text { font-size: 1.8rem; font-weight: 900; color: #0077b6; }
         .nav-link { text-decoration: none; color: #444; font-weight: 600; margin-left: 2rem; }
 
-        .container { max-width: 900px; margin: 3rem auto; padding: 0 2rem; }
+        .container { max-width: 1000px; margin: 3rem auto; padding: 0 2rem; }
         
-        .score-banner { background: white; padding: 2.5rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #eee; text-align: center; margin-bottom: 3rem; }
-        .score-circle { width: 120px; height: 120px; border-radius: 60px; background: #3fbad9; color: white; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 800; margin: 0 auto 1.5rem; box-shadow: 0 8px 20px rgba(63, 186, 217, 0.3); }
-        .score-category { font-size: 1.5rem; font-weight: 700; color: #3fbad9; margin-bottom: 0.5rem; }
-        .score-date { color: #666; font-size: 0.9rem; }
-
         .advice-section { display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 3rem; }
-        .advice-card { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border-left: 5px solid #3fbad9; }
-        .advice-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: #0077b6; display: flex; align-items: center; gap: 0.8rem; }
+        .advice-card { background: white; padding: 2.5rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-left: 5px solid #0077b6; }
+        .advice-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem; color: #0077b6; display: flex; align-items: center; gap: 0.8rem; }
         .advice-content { color: #4a4e69; line-height: 1.7; }
-        .advice-content ul { padding-left: 1.2rem; }
-        .advice-content li { margin-bottom: 0.8rem; }
+
+        /* New Card Grid System */
+        .tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+        .card { background: #fdfdfd; padding: 1.8rem; border-radius: 16px; border: 1px solid #edf2f7; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); min-height: 120px; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.06); border-color: #0077b640; }
+        .card h3 { margin: 0 0 0.8rem 0; font-size: 1.2rem; color: #1a202c; display: flex; align-items: center; gap: 10px; }
+        .card p { margin: 0; font-size: 0.95rem; color: #4a5568; line-height: 1.5; }
+        
+        .fade-in { animation: slideUp 0.6s ease forwards; opacity: 0; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .btn-back { display: inline-block; margin-bottom: 2rem; color: #666; text-decoration: none; font-weight: 600; transition: color 0.3s; }
         .btn-back:hover { color: #0077b6; }
 
-        /* Custom colors for levels */
-        .level-low { border-left-color: #2a9d8f; }
-        .level-mod { border-left-color: #f4a261; }
-        .level-high { border-left-color: #e63946; }
+        @media (max-width: 768px) {
+            .site-header { padding: 1rem 1.5rem; }
+            .container { margin: 1.5rem auto; }
+            .tips-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Checklist Styles */
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            padding: 1.2rem;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #edf2f7;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+        .checklist-item:hover { background: #f1f5f9; border-color: #cbd5e1; transform: scale(1.02); }
+        .checklist-item input { width: 20px; height: 20px; cursor: pointer; accent-color: #f4a261; margin: 0; }
+        .btn-save {
+            background: #f4a261;
+            color: white;
+            padding: 1rem 3rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(244, 162, 97, 0.2);
+        }
+        .btn-save:hover { background: #e76f51; transform: translateY(-3px); box-shadow: 0 8px 25px rgba(231, 111, 81, 0.4); }
+
+        /* Notification Styling */
+        #notification-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+        .toast {
+            background: #2a9d8f;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-bottom: 10px;
+            font-weight: 600;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
     </style>
+    <div id="notification-container"></div>
 </head>
 <body>
 
     <header class="site-header">
         <a href="home.html" style="text-decoration: none;"><span class="brand-text">Rahti</span></a>
     </header>
+
     <div class="container">
         <a href="dashboard.html" class="btn-back">← Retour au Dashboard</a>
         
         <div style="text-align: center; margin-bottom: 4rem;">
-            <h1 style="font-size: 2.5rem; font-weight: 800; color: #2d3748; margin-bottom: 1rem;">Votre Guide de Bien-être Professionnel</h1>
-            <p style="color: #64748b; font-size: 1.1rem; max-width: 600px; margin: 0 auto;">Retrouvez toutes nos recommandations pour prévenir l'épuisement et cultiver un équilibre durable.</p>
+            <h1 style="font-size: 2.8rem; font-weight: 800; color: #1a202c; margin-bottom: 1rem;">Votre Guide de Bien-être</h1>
+            <p style="color: #64748b; font-size: 1.15rem; max-width: 700px; margin: 0 auto; line-height: 1.6;">Retrouvez toutes nos recommandations pour prévenir l'épuisement et cultiver un équilibre durable au quotidien.</p>
         </div>
 
         <div class="advice-section">
-            <!-- Professional Balance -->
-            <div class="advice-card">
+
+            <!-- Relaxation Video Section -->
+            <div class="advice-card fade-in">
                 <div class="advice-title">🏥 Relaxation guidée</div>
                 <div class="advice-content">
-                    <p>La cohérence cardiaque est un outil précieux pour réguler votre système nerveux et évacuer le stress accumulé durant vos soins. Pratiquez cet exercice de 5 minutes pour retrouver un calme intérieur immédiat.</p>
-                    <video controls style="width: 100%; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-top: 1rem;">
-                        <source src="0327.mp4" type="video/mp4">
-                        Votre navigateur ne supporte pas la lecture de vidéos.
-                    </video>
+                    <p style="font-size: 1.1rem; margin-bottom: 2rem;">La cohérence cardiaque est un outil précieux pour réguler votre système nerveux et évacuer le stress accumulé durant vos soins. Pratiquez cet exercice de 5 minutes pour retrouver un calme intérieur immédiat.</p>
+                    
+                    <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
+                        <video controls style="width: 700px; max-width: 100%; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
+                            <source src="0327.mp4" type="video/mp4">
+                            Votre navigateur ne supporte pas la lecture de vidéos.
+                        </video>
+                    </div>
                 </div>
             </div>
 
-            <!-- Personal Recovery -->
-            <div class="advice-card">
-                <div class="advice-title">🌙 Récupération Hors-Service</div>
+            <!-- New Individual Advice Cards -->
+            <div class="advice-card fade-in" style="animation-delay: 0.1s;">
+                <div class="advice-title">😴 Sommeil de qualité</div>
                 <div class="advice-content">
                     <ul>
-                        <li><strong>Sommeil Post-Garde</strong> : Créez une routine de \"retour au calme\" rigoureuse après vos shifts (obscurité totale, pas d'écrans) pour favoriser une récupération physiologique réelle.</li>
-                        <li><strong>Déconnexion Numérique</strong> : Si possible, désactivez les notifications des groupes de l'unité en dehors de vos heures de service. Votre repos a besoin de silence.</li>
-                        <li><strong>Activité Physique & Oxygénation</strong> : Le travail en milieu hospitalier est clos. Prenez le temps de marcher en extérieur pour réduire le cortisol lié au stress ambiant.</li>
-                        <li><strong>Réseau de Soutien</strong> : Partagez vos ressentis avec vos proches ou collègues hors du cadre de l'urgence pour décharger le poids émotionnel des soins.</li>
+                        <li>Maintenez un horaire de sommeil régulier</li>
+                        <li>Évitez les écrans 30 min avant dormir</li>
+                        <li>Créez un environnement calme (lumière faible, silence)</li>
                     </ul>
                 </div>
             </div>
 
-            <!-- Health & Support -->
-            <div class="advice-card">
-                <div class="advice-title">🩺 Santé & Accompagnement Soignant</div>
+            <div class="advice-card fade-in" style="animation-delay: 0.2s;">
+                <div class="advice-title">🏃 Activité physique adaptée</div>
                 <div class="advice-content">
                     <ul>
-                        <li><strong>Auto-Surveillance Clinique</strong> : Soyez attentif aux signaux d'alerte : irritabilité inhabituelle avec les patients, fatigue chronique malgré le repos ou cynisme croissant.</li>
-                        <li><strong>Médecine du Travail</strong> : Sollicitez une visite de prévention si vous sentez que votre équilibre vacille. C'est un droit et une mesure de sécurité pour vous et vos patients.</li>
-                        <li><strong>Soutien Psychologique</strong> : De nombreuses structures hospitalières proposent un accompagnement dédié aux soignants. N'attendez pas l'épuisement total pour consulter.</li>
-                        <li><strong>Pause Thérapeutique</strong> : Si l'épuisement émotionnel est majeur, une mise au repos prescrite est parfois le seul moyen d'éviter un burn-out profond et durable.</li>
+                        <li>20–30 minutes de marche quotidienne</li>
+                        <li>Étirements légers après le travail</li>
+                        <li>Activité douce (yoga, mobilité)</li>
                     </ul>
+                </div>
+            </div>
+
+            <div class="advice-card fade-in" style="animation-delay: 0.3s;">
+                <div class="advice-title">🍎 Alimentation équilibrée</div>
+                <div class="advice-content">
+                    <ul>
+                        <li>Repas réguliers et équilibrés</li>
+                        <li>Hydratation suffisante (1.5–2L/jour)</li>
+                        <li>Réduction des excitants (café, boissons énergétiques)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="advice-card fade-in" style="animation-delay: 0.4s;">
+                <div class="advice-title">🧠 Gestion du stress au travail</div>
+                <div class="advice-content">
+                    <ul>
+                        <li>Faites des pauses courtes mais régulières</li>
+                        <li>Priorisez vos tâches (urgent / important)</li>
+                        <li>Évitez la surcharge mentale</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="advice-card fade-in" style="animation-delay: 0.5s;">
+                <div class="advice-title">🤝 Soutien social et émotionnel</div>
+                <div class="advice-content">
+                    <ul>
+                        <li>Échangez avec un collègue ou un proche</li>
+                        <li>Partagez vos ressentis sans jugement</li>
+                        <li>Ne restez pas isolé</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="advice-card fade-in" style="animation-delay: 0.6s;">
+                <div class="advice-title">⏳ Organisation et équilibre</div>
+                <div class="advice-content">
+                    <ul>
+                        <li>Planifiez votre journée (to-do list)</li>
+                        <li>Fixez des limites claires travail/repos</li>
+                        <li>Accordez-vous du temps personnel</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="advice-card fade-in" style="animation-delay: 0.7s;">
+                <div class="advice-title">🚫 Habitudes à limiter</div>
+                <div class="advice-content">
+                    <ul>
+                        <li>Excès de caféine</li>
+                        <li>Manque de sommeil</li>
+                        <li>Surcharge continue sans pause</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Well-being Checklist Section -->
+            <div class="advice-card fade-in" style="border-left-color: #f4a261; margin-top: 1rem;">
+                <div class="advice-title" style="color: #f4a261;">📊 Checklist bien-être du jour</div>
+                <div class="advice-content">
+                    <p style="margin-bottom: 1.5rem; font-weight: 600; color: #4a5568;">Cochez vos accomplissements d'aujourd'hui pour suivre votre équilibre :</p>
+                    <div id="checklist-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                        <label class="checklist-item"><input type="checkbox"> <span>J’ai pratiqué une activité physique</span></label>
+                        <label class="checklist-item"><input type="checkbox"> <span>J’ai bien dormi</span></label>
+                        <label class="checklist-item"><input type="checkbox"> <span>J’ai évité les écrans avant dormir</span></label>
+                        <label class="checklist-item"><input type="checkbox"> <span>J’ai pris du temps pour me détendre</span></label>
+                        <label class="checklist-item"><input type="checkbox"> <span>J’ai mangé équilibré</span></label>
+                        <label class="checklist-item"><input type="checkbox"> <span>J’ai réduit le café</span></label>
+                        <label class="checklist-item"><input type="checkbox"> <span>J’ai parlé à quelqu’un</span></label>
+                    </div>
+                    <div style="margin-top: 2rem; display: flex; justify-content: center;">
+                        <button onclick="saveChecklist()" class="btn-save">Enregistrer ma journée</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -102,6 +230,53 @@
             } catch (error) {
                 console.error('Failed to load user data:', error);
             }
+        }
+
+        async function saveChecklist() {
+            const items = [];
+            document.querySelectorAll('.checklist-item input:checked').forEach(cb => {
+                items.push(cb.closest('.checklist-item').querySelector('span').textContent.trim());
+            });
+            
+            if (items.length === 0) {
+                showNotification("Veuillez cocher au moins un élément !", "error");
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/user/save-checklist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ items })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showNotification(result.message);
+                    // Reset checklist
+                    document.querySelectorAll('.checklist-item input').forEach(cb => cb.checked = false);
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Erreur réseau', 'error');
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notification-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            if (type === 'error') toast.style.background = '#e63946';
+            
+            const icon = type === 'success' ? '✅' : '❌';
+            toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.transform = 'translateX(0)'; }, 10);
+            setTimeout(() => {
+                toast.style.transform = 'translateX(120%)';
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
         }
 
         initPage();

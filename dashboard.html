@@ -174,6 +174,22 @@
         </div>
     </div>
 
+    <!-- Exercise Details Modal -->
+    <div id="exercise-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10001; backdrop-filter:blur(10px); justify-content:center; align-items:center;">
+        <div style="background:white; max-width:600px; width:90%; border-radius:24px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow:hidden; animation: fadeIn 0.3s ease;">
+            <div style="padding:1.5rem 2rem; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; background: #fdfaf6;">
+                <h2 style="margin:0; font-size:1.4rem; color:#f4a261;">Résultat de l'exercice</h2>
+                <button onclick="closeExerciseModal()" style="border:none; background:none; font-size:1.8rem; cursor:pointer; color:#a0aec0; transition:0.2s;">&times;</button>
+            </div>
+            <div id="exercise-content" style="padding:2.5rem;">
+                <!-- Content injected here -->
+            </div>
+            <div style="padding:1.5rem 2rem; background:#f8fafc; border-top:1px solid #eee; text-align:right;">
+                <button onclick="closeExerciseModal()" class="btn-primary" style="background:#f4a261;">Fermer</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Settings Modal -->
     <div id="settings-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10000; backdrop-filter:blur(5px);">
         <div id="settings-modal-content" style="background:white; max-width:550px; width:95%; max-height: 90vh; margin:5vh auto; border-radius:16px; padding:2.5rem; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow-y: auto;">
@@ -367,7 +383,7 @@
                 let html = `
                     <div class="dimension-grid">
                         <div class="dim-card"><div class="dim-val">${ee}</div><div class="dim-name">Épuisement</div></div>
-                        <div class="dim-card"><div class="dim-val">${dp}</div><div class="dim-name">Détachement</div></div>
+                        <div class="dim-card"><div class="dim-val">${dp}</div><div class="dim-name">Dépersonnalisation</div></div>
                         <div class="dim-card"><div class="dim-val">${pa}</div><div class="dim-name">Accomplissement</div></div>
                     </div>
                     <h3>Détail par question</h3>
@@ -463,15 +479,27 @@
                         // History List
                         const historyContainer = document.getElementById('history-container');
                         historyContainer.innerHTML = '';
-                        reversedTests.forEach(test => {
+                        reversedTests.forEach((test, idx) => {
                             const li = document.createElement('li');
                             li.className = 'history-item';
                             const tDate = new Date(test.date).toLocaleDateString('fr-FR', options);
                             const color = test.category.includes('élevé') ? '#e63946' : (test.category.includes('modéré') ? '#f4a261' : '#3fbad9');
                             
+                            const exerciseBtn = test.exercise ? `
+                                <button onclick="showExercise(${reversedTests.length - 1 - idx})" 
+                                        style="background: white; border: 1.5px solid ${color}; color: ${color}; 
+                                               padding: 0.3rem 0.6rem; border-radius: 8px; font-weight: 700; 
+                                               cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; gap: 4px; 
+                                               transition: all 0.2s; margin-left:10px;">
+                                    <span>🧠</span> Exercice
+                                </button>` : '';
+
                             li.innerHTML = `
                                 <span class="history-date">${tDate}</span>
-                                <span class="history-score" style="background: ${color}">${test.category} (Score: ${test.score})</span>
+                                <div style="display: flex; align-items: center;">
+                                    <span class="history-score" style="background: ${color}">${test.category} (Score: ${test.score})</span>
+                                    ${exerciseBtn}
+                                </div>
                             `;
                             historyContainer.appendChild(li);
                         });
@@ -485,6 +513,33 @@
                 console.error('Auth check failed:', error);
                 window.location.href = 'connexion.html';
             }
+        }
+
+        function showExercise(testIdx) {
+            const test = userData.tests[testIdx];
+            if (!test || !test.exercise) return;
+            
+            const modal = document.getElementById('exercise-modal');
+            const content = document.getElementById('exercise-content');
+            
+            content.innerHTML = `
+                <div style="background: #f8fafc; padding: 2rem; border-radius: 16px; border-left: 6px solid #f4a261; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                    <h3 style="margin: 0 0 1.5rem 0; color: #f4a261; font-size: 1.3rem;">🧠 Détail de l'exercice - ${new Date(test.date).toLocaleDateString('fr-FR')}</h3>
+                    <div style="margin-bottom: 1.5rem;">
+                        <span style="font-size: 0.8rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Pensée négative initiale</span>
+                        <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; color: #2d3748; line-height: 1.6;">"${test.exercise.pensee}" <span style="font-size: 0.9rem; font-style: italic; color: #718096;">— (${test.exercise.emotion})</span></p>
+                    </div>
+                    <div style="background: #2a9d8f08; padding: 1.2rem; border-radius: 12px; border: 1px dashed #2a9d8f30;">
+                        <span style="font-size: 0.8rem; font-weight: 800; color: #2a9d8f; text-transform: uppercase; letter-spacing: 0.5px;">Nouvelle perspective constructive</span>
+                        <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; color: #1a1c1e; line-height: 1.6; font-weight: 600;">"${test.exercise.newPensee}"</p>
+                    </div>
+                </div>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        function closeExerciseModal() {
+            document.getElementById('exercise-modal').style.display = 'none';
         }
 
         function renderChart(tests) {

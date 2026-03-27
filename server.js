@@ -14,6 +14,19 @@ mongoose.connect(MONGODB_URI)
   .then(() => console.log('Connected to MongoDB Atlas'))
   .catch(err => console.error('Could not connect to MongoDB:', err));
 
+// Test Schema (sub-document)
+const testSchema = new mongoose.Schema({
+  score: Number,
+  category: String,
+  answers: [Number],
+  exercise: {
+    pensee: String,
+    emotion: String,
+    newPensee: String
+  },
+  date: { type: Date, default: Date.now }
+});
+
 // User Schema
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -25,11 +38,10 @@ const userSchema = new mongoose.Schema({
   hopital: String,
   service: String,
   experience: Number,
-  tests: [{
-    score: Number,
-    category: String,
-    answers: [Number],
-    date: { type: Date, default: Date.now }
+  tests: [testSchema],
+  checklists: [{
+    date: { type: Date, default: Date.now },
+    items: [String]
   }],
   createdAt: { type: Date, default: Date.now }
 });
@@ -114,6 +126,30 @@ app.delete("/api/admin/user/:id", async (req, res) => {
   }
 });
 
+// Admin API: Delete a specific test from user history
+app.delete("/api/admin/user/:userId/test/:testId", async (req, res) => {
+  if (req.session.user && req.session.user.role === 'admin') {
+    try {
+      const { userId, testId } = req.params;
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ success: false, message: "Utilisateur non trouvé" });
+      }
+
+      // Use Mongoose's pull method to remove the sub-document by ID
+      user.tests.pull({ _id: testId });
+      await user.save();
+      
+      res.json({ success: true, message: "Test supprimé avec succès" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: "Erreur lors de la suppression du test" });
+    }
+  } else {
+    res.status(403).json({ success: false, message: "Interdit" });
+  }
+});
+
 // Admin API: Toggle user role (user <-> admin)
 app.post("/api/admin/user/toggle-role/:id", async (req, res) => {
   if (req.session.user && req.session.user.role === 'admin') {
@@ -191,6 +227,59 @@ app.post("/api/save-test", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Error saving test result" });
+  }
+});
+
+// User API: Save exercise answers for the most recent test
+app.post("/api/user/save-exercise", async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ success: false, message: "Not logged in" });
+  }
+
+  try {
+    const { pensee, emotion, newPensee } = req.body;
+    const user = await User.findOne({ email: req.session.user.email });
+
+    if (!user || user.tests.length === 0) {
+      return res.status(404).json({ success: false, message: "No tests found to attach exercise to" });
+    }
+
+    // Attach exercise to the most recent test
+    const latestTest = user.tests[user.tests.length - 1];
+    latestTest.exercise = { pensee, emotion, newPensee };
+    
+    await user.save();
+    res.json({ success: true, message: "Exercice enregistré avec succès" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Erreur lors de l'enregistrement de l'exercice" });
+  }
+});
+
+// User API: Save daily well-being checklist
+app.post("/api/user/save-checklist", async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ success: false, message: "Not logged in" });
+  }
+
+  try {
+    const { items } = req.body;
+    const user = await User.findOne({ email: req.session.user.email });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    user.checklists.push({
+      date: new Date(),
+      items
+    });
+    
+    await user.save();
+    res.json({ success: true, message: "Checklist enregistrée avec succès !" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Erreur lors de l'enregistrement de la checklist" });
   }
 });
 
