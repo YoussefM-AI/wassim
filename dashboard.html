@@ -56,6 +56,7 @@
         .history-list { list-style: none; padding: 0; margin: 0; }
         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-radius: 8px; background: #f8f9fa; margin-bottom: 1rem; transition: transform 0.2s; }
         .history-item:hover { transform: translateX(5px); background: #f1f3f5; }
+        .history-hidden { display: none; }
         .history-date { font-weight: 600; color: #444; }
         .history-score { background: #3fbad9; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
 
@@ -317,7 +318,17 @@
                 const result = await response.json();
                 if (result.success) {
                     showNotification(result.message);
-                    checkAuth(); // Refresh data
+                    // Update UI directly without re-calling checkAuth
+                    if (data.name) {
+                        const firstName = data.name.split(' ')[0];
+                        document.getElementById('welcome-msg').textContent = `Bonjour ${firstName}, bienvenue sur votre tableau de bord !`;
+                        userData.name = data.name;
+                    }
+                    if (data.age) userData.age = data.age;
+                    if (data.sexe) userData.sexe = data.sexe;
+                    if (data.hopital) userData.hopital = data.hopital;
+                    if (data.service) userData.service = data.service;
+                    if (data.experience) userData.experience = data.experience;
                     closeSettings();
                 } else {
                     showNotification(result.message, 'error');
@@ -479,9 +490,14 @@
                         // History List
                         const historyContainer = document.getElementById('history-container');
                         historyContainer.innerHTML = '';
+                        // Remove existing expand button if present
+                        const oldBtn = document.getElementById('expand-history-btn');
+                        if (oldBtn) oldBtn.remove();
+                        const VISIBLE_COUNT = 3;
                         reversedTests.forEach((test, idx) => {
                             const li = document.createElement('li');
                             li.className = 'history-item';
+                            if (idx >= VISIBLE_COUNT) li.classList.add('history-hidden');
                             const tDate = new Date(test.date).toLocaleDateString('fr-FR', options);
                             const color = test.category.includes('élevé') ? '#e63946' : (test.category.includes('modéré') ? '#f4a261' : '#3fbad9');
                             
@@ -503,6 +519,24 @@
                             `;
                             historyContainer.appendChild(li);
                         });
+
+                        // Show expand button if more than VISIBLE_COUNT tests
+                        if (reversedTests.length > VISIBLE_COUNT) {
+                            const expandBtn = document.createElement('button');
+                            expandBtn.id = 'expand-history-btn';
+                            expandBtn.className = 'btn-secondary';
+                            expandBtn.style.cssText = 'width: 100%; margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px;';
+                            expandBtn.innerHTML = `<span>▼</span> Voir les ${reversedTests.length - VISIBLE_COUNT} autres tests`;
+                            expandBtn.onclick = function() {
+                                const hidden = historyContainer.querySelectorAll('.history-hidden');
+                                const isExpanded = hidden[0].style.display === 'flex';
+                                hidden.forEach(el => el.style.display = isExpanded ? 'none' : 'flex');
+                                expandBtn.innerHTML = isExpanded
+                                    ? `<span>▼</span> Voir les ${reversedTests.length - VISIBLE_COUNT} autres tests`
+                                    : `<span>▲</span> Réduire`;
+                            };
+                            historyContainer.after(expandBtn);
+                        }
                     } else {
                         document.getElementById('history-container').innerHTML = '<p style="color: #6c757d; font-style: italic;">Vous n\'avez pas encore passé de test.</p>';
                     }

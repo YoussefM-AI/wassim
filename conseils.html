@@ -252,8 +252,6 @@
                 const result = await response.json();
                 if (result.success) {
                     showNotification(result.message);
-                    // Reset checklist
-                    document.querySelectorAll('.checklist-item input').forEach(cb => cb.checked = false);
                 } else {
                     showNotification(result.message, 'error');
                 }
