@@ -131,6 +131,18 @@
                         <span id="detail-level" class="detail-value">-</span>
                     </div>
                 </div>
+
+                <h2 class="section-title" style="margin-top: 1.5rem; display: none;" id="first-test-title">Détails du premier test</h2>
+                <div id="first-test-details" style="margin-bottom: 1.5rem; display: none;">
+                    <div class="test-detail">
+                        <span class="detail-label">Score global</span>
+                        <span id="first-detail-score" class="detail-value">-</span>
+                    </div>
+                    <div class="test-detail">
+                        <span class="detail-label">Niveau de stress / charge</span>
+                        <span id="first-detail-level" class="detail-value">-</span>
+                    </div>
+                </div>
                 
                 <div class="actions-wrapper">
                     <button class="btn-primary" id="btn-show-details" disabled>Voir le détail complet</button>
@@ -480,6 +492,19 @@
                         document.getElementById('detail-score').textContent = `${lastTest.score} / 88`;
                         document.getElementById('detail-level').textContent = lastTest.category;
                         document.getElementById('detail-level').style.color = lastTest.category.includes('élevé') ? '#e63946' : (lastTest.category.includes('modéré') ? '#f4a261' : '#2a9d8f');
+
+                        // First Test Details
+                        if(originalTests.length > 1) {
+                            document.getElementById('first-test-title').style.display = 'block';
+                            document.getElementById('first-test-details').style.display = 'block';
+                            const firstTest = originalTests[0];
+                            document.getElementById('first-detail-score').textContent = `${firstTest.score} / 88`;
+                            document.getElementById('first-detail-level').textContent = firstTest.category;
+                            document.getElementById('first-detail-level').style.color = firstTest.category.includes('élevé') ? '#e63946' : (firstTest.category.includes('modéré') ? '#f4a261' : '#2a9d8f');
+                        } else {
+                            document.getElementById('first-test-title').style.display = 'none';
+                            document.getElementById('first-test-details').style.display = 'none';
+                        }
 
                         // Render Chart
                         if (user.tests.length >= 2) {
